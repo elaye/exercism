@@ -1,35 +1,55 @@
-// Test whether a number n is a prime by checking if
-// it can be divided by any previous prime between
-// 2 and sqrt(n)
-fn is_prime(n: u32, primes: &Vec<u32>) -> bool {
-    let divisor_max = (n as f64).sqrt().ceil() as u32;
-    !primes
-        .into_iter()
-        .filter(|i| **i <= divisor_max)
-        .any(|i| n % *i == 0)
+struct Primes(Vec<u32>);
+
+impl Primes {
+    pub fn new() -> Primes {
+        Primes(Vec::new())
+    }
+
+    pub fn get_vec_mut(&mut self) -> &mut Vec<u32> {
+        &mut self.0
+    }
+
+    pub fn get_vec(&self) -> &Vec<u32> {
+        &self.0
+    }
+
+    // Test whether a number n is a prime by checking if
+    // it can be divided by any previous prime between
+    // 2 and sqrt(n)
+    fn is_prime(&self, n: u32) -> bool {
+        let divisor_max = (n as f64).sqrt().ceil() as u32;
+        !self.0
+            .iter()
+            .filter(|i| **i <= divisor_max)
+            .any(|i| n % *i == 0)
+    }
 }
 
-// Find the next prime number given
-// a list of all the previous prime numbers
-fn next_prime(primes: &Vec<u32>) -> u32 {
-    // If there's no previous prime number,
-    // return the first prime number
-    if primes.len() < 1 {
-        return 2;
+impl Iterator for Primes {
+    type Item = u32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let next = {
+            let vec = self.get_vec();
+
+            match vec.len() {
+                0 => 2,
+                1 => 3,
+                _ => {
+                    let mut n = vec[vec.len() - 1] + 2;
+
+                    while !self.is_prime(n) {
+                        n = n + 2;
+                    }
+
+                    n
+                }
+            }
+        };
+
+        self.get_vec_mut().push(next);
+        Some(next)
     }
-
-    if primes.len() < 2 {
-        return 3;
-    }
-
-    let mut n = primes[primes.len() - 1] + 2;
-
-    while !is_prime(n, primes) {
-        // We only check odd numbers
-        n = n + 2;
-    }
-
-    n
 }
 
 // Find the nth prime number
@@ -38,12 +58,6 @@ pub fn nth(n: u32) -> Option<u32> {
         return None;
     }
 
-    let mut primes = Vec::new();
-
-    while primes.len() < n as usize {
-        let prime = next_prime(&primes);
-        primes.push(prime);
-    }
-
-    Some(primes[primes.len() - 1])
+    let mut primes = Primes::new();
+    primes.nth(n as usize - 1)
 }
