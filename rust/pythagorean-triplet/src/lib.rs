@@ -16,7 +16,7 @@
 //
 // Once we have 'b', it is then easy to deduce 'a' and 'c'
 pub fn find() -> Option<u32> {
-    let b = (1..501).find(|i| 1000 * (500 - i) % (1000 - i) == 0).unwrap();
+    let b = (1..501).find(|i| 1000 * (500 - i) % (1000 - i) == 0)?;
     let a = 1000 * (500 - b) / (1000 - b);
     let c = 1000 - b - a;
     Some(a * b * c)
