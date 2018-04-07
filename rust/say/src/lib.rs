@@ -77,7 +77,6 @@ fn encode_3_digits(hundreds: u32, tens: u32, units: u32, order: Option<&str>) ->
 }
 
 fn encode_chunk(digits: &[u32], order: Option<&str>) -> String {
-    println!("chunk {:?}", digits);
     match digits.len() {
         1 => encode_1_digit(digits[0], order),
         2 => encode_2_digits(digits[1], digits[0], order),
