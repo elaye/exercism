@@ -1,29 +1,9 @@
 #[macro_use]
 extern crate nom;
 
-// use nom;
-
-// named!(chunk<&str, (usize, char)>,
-//        alt!(
-//            do_parse!(
-//                u32!(be_u32) >> take!(1)
-//            )
-//                |
-//            take!(1)
-//        )
-// )
-
-// named!(encoded_str<&str, Vec<(usize, char)>>,
-//        many0!(chunk)
-// )
-
-// named!(chunk<&str, (u32, char)>,
-//     do_parse!(
-//         nb: u32!(nom::Endianness::Big) >> ch: take!(1) >> (nb, ch)
-//     )
-// );
-
 use nom::{digit};
+
+// Decoding parser combinators
 
 named!(numeric_string<&str>,
        map_res!(digit, std::str::from_utf8)
@@ -47,44 +27,18 @@ named!(chunks<Vec<(u32, &str)>>,
        many1!(either_chunk)
 );
 
-pub fn test_chunks(s: &str) -> Vec<(u32, &str)> {
-    chunks(s.as_bytes()).unwrap().1
-}
-
-pub fn test_either_chunk(s: &str) -> (u32, &str) {
-    either_chunk(s.as_bytes()).unwrap().1
-}
-
-pub fn test_chunk(s: &str) -> (u32, &str) {
-    chunk(s.as_bytes()).unwrap().1
-}
-
-pub fn test_number(s: &str) -> u32 {
-    number(s.as_bytes()).unwrap().1
-}
-
-// named!(number<u32>, map_res!(take_while!(is_digit), std::str::from_utf8));
-
-// named!(chunk<(u32, &[u8])>,
-//     tuple!(number, take!(1))
-// );
-
-// tuple!(many1!(be_u32), take!(1))
-
-// named!(chunk<(u32, &str)>,
-//        tuple!(u32!(nom::Endianness::Big), take!(1))
-// );
-
-
-
-// pub fn test_nom(s: &str) -> (u32, char) {
-//     let r = chunk(s.as_bytes());
-//     println!("{:?}", r);
-//     (1, 'a')
-// }
+// ---------------------------->
 
 pub fn decode(s: &str) -> String {
-    String::from("")
+    if s == "" {
+        return String::new();
+    }
+
+    let parsed_chunks = chunks(s.as_bytes()).unwrap().1;
+
+    let f = |acc, &(n, ch): &(u32, &str)| format!("{}{}", acc, ch.repeat(n as usize));
+
+    parsed_chunks.iter().fold(String::new(), f)
 }
 
 pub fn encode(s: &str) -> String {
@@ -118,21 +72,3 @@ pub fn encode(s: &str) -> String {
         }
     })
 }
-
-// pub fn encode(s: &str) -> String {
-//     let f = |mut (prev_char, acc): (char, Vec<(char, usize)>), c| {
-//         match prev_char {
-//             Some(prev) => if c == prev {
-//                 last.1 = last.1 + 1;
-//             } else {
-//                 vec.push((c, 1));
-//             },
-//             None => vec.push((c, 1))
-//         }
-
-//         (c, acc)
-//     };
-
-//     s.chars().fold((None, Vec::new()), f)
-//         .iter().fold(String::new(), |acc, &(c, n)| format!("{}{}{}", acc, n, c))
-// }

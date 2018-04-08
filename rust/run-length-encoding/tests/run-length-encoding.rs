@@ -7,110 +7,110 @@ extern crate run_length_encoding as rle;
 //     assert_eq!((12, 'a'), rle::test_nom("12A"))
 // }
 
+// #[test]
+// fn test_number() {
+//     assert_eq!(37, rle::test_number("37"));
+// }
+
+// #[test]
+// fn test_chunk() {
+//     assert_eq!((2, "a"), rle::test_chunk("2a"));
+//     assert_eq!((129, "f"), rle::test_chunk("129f"));
+// }
+
+// #[test]
+// fn test_either_chunk() {
+//     assert_eq!((2, "a"), rle::test_either_chunk("2a"));
+//     assert_eq!((129, "f"), rle::test_either_chunk("129f"));
+//     assert_eq!((1, "e"), rle::test_either_chunk("e"));
+// }
+
+// #[test]
+// fn test_chunks() {
+//     assert_eq!(vec![(2, "a"), (1, "v"), (3, "x")], rle::test_chunks("2av3x"));
+//     assert_eq!(vec![(1, "b"), (1, "i")], rle::test_chunks("bi"));
+// }
+
+
 #[test]
-fn test_number() {
-    assert_eq!(37, rle::test_number("37"));
+fn test_encode_empty_string() {
+    assert_eq!("", rle::encode(""));
 }
 
 #[test]
-fn test_chunk() {
-    assert_eq!((2, "a"), rle::test_chunk("2a"));
-    assert_eq!((129, "f"), rle::test_chunk("129f"));
+// #[ignore]
+fn test_encode_single_characters() {
+    assert_eq!("XYZ", rle::encode("XYZ"));
 }
 
 #[test]
-fn test_either_chunk() {
-    assert_eq!((2, "a"), rle::test_either_chunk("2a"));
-    assert_eq!((129, "f"), rle::test_either_chunk("129f"));
-    assert_eq!((1, "e"), rle::test_either_chunk("e"));
+// #[ignore]
+fn test_encode_string_with_no_single_characters() {
+    assert_eq!("2A3B4C", rle::encode("AABBBCCCC"));
 }
 
 #[test]
-fn test_chunks() {
-    assert_eq!(vec![(2, "a"), (1, "v"), (3, "x")], rle::test_chunks("2av3x"));
-    assert_eq!(vec![(1, "b"), (1, "i")], rle::test_chunks("bi"));
+// #[ignore]
+fn test_encode_single_characters_mixed_with_repeated_characters() {
+    assert_eq!("12WB12W3B24WB", rle::encode(
+        "WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB"));
 }
 
-
-// #[test]
-// fn test_encode_empty_string() {
-//     assert_eq!("", rle::encode(""));
-// }
-
-// #[test]
-// // #[ignore]
-// fn test_encode_single_characters() {
-//     assert_eq!("XYZ", rle::encode("XYZ"));
-// }
-
-// #[test]
-// // #[ignore]
-// fn test_encode_string_with_no_single_characters() {
-//     assert_eq!("2A3B4C", rle::encode("AABBBCCCC"));
-// }
-
-// #[test]
-// // #[ignore]
-// fn test_encode_single_characters_mixed_with_repeated_characters() {
-//     assert_eq!("12WB12W3B24WB", rle::encode(
-//         "WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB"));
-// }
-
-// #[test]
-// // #[ignore]
-// fn test_encode_multiple_whitespace_mixed_in_string() {
-//     assert_eq!("2 hs2q q2w2 ", rle::encode("  hsqq qww  "));
-// }
-
-// #[test]
-// // #[ignore]
-// fn test_encode_lowercase_characters() {
-//     assert_eq!("2a3b4c", rle::encode("aabbbcccc"));
-// }
-
-// // decoding tests
-
-// #[test]
+#[test]
 // #[ignore]
-// fn test_decode_empty_string() {
-//     assert_eq!("", rle::decode(""));
-// }
+fn test_encode_multiple_whitespace_mixed_in_string() {
+    assert_eq!("2 hs2q q2w2 ", rle::encode("  hsqq qww  "));
+}
 
-// #[test]
+#[test]
 // #[ignore]
-// fn test_decode_single_characters_only() {
-//     assert_eq!("XYZ", rle::decode("XYZ"));
-// }
+fn test_encode_lowercase_characters() {
+    assert_eq!("2a3b4c", rle::encode("aabbbcccc"));
+}
 
-// #[test]
+// decoding tests
+
+#[test]
 // #[ignore]
-// fn test_decode_string_with_no_single_characters() {
-//     assert_eq!("AABBBCCCC", rle::decode("2A3B4C"));
-// }
+fn test_decode_empty_string() {
+    assert_eq!("", rle::decode(""));
+}
 
-// #[test]
+#[test]
 // #[ignore]
-// fn test_decode_single_characters_with_repeated_characters() {
-//     assert_eq!("WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB",
-//                rle::decode("12WB12W3B24WB"));
-// }
+fn test_decode_single_characters_only() {
+    assert_eq!("XYZ", rle::decode("XYZ"));
+}
 
-// #[test]
+#[test]
 // #[ignore]
-// fn test_decode_multiple_whitespace_mixed_in_string() {
-//     assert_eq!("  hsqq qww  ", rle::decode("2 hs2q q2w2 "));
-// }
+fn test_decode_string_with_no_single_characters() {
+    assert_eq!("AABBBCCCC", rle::decode("2A3B4C"));
+}
 
-// #[test]
+#[test]
 // #[ignore]
-// fn test_decode_lower_case_string() {
-//     assert_eq!("aabbbcccc", rle::decode("2a3b4c"));
-// }
+fn test_decode_single_characters_with_repeated_characters() {
+    assert_eq!("WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB",
+               rle::decode("12WB12W3B24WB"));
+}
 
-// // consistency test
-
-// #[test]
+#[test]
 // #[ignore]
-// fn test_consistency() {
-//     assert_eq!("zzz ZZ  zZ", rle::decode(rle::encode("zzz ZZ  zZ").as_str()));
-// }
+fn test_decode_multiple_whitespace_mixed_in_string() {
+    assert_eq!("  hsqq qww  ", rle::decode("2 hs2q q2w2 "));
+}
+
+#[test]
+// #[ignore]
+fn test_decode_lower_case_string() {
+    assert_eq!("aabbbcccc", rle::decode("2a3b4c"));
+}
+
+// consistency test
+
+#[test]
+// #[ignore]
+fn test_consistency() {
+    assert_eq!("zzz ZZ  zZ", rle::decode(rle::encode("zzz ZZ  zZ").as_str()));
+}
