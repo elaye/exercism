@@ -4,30 +4,27 @@ extern crate nom;
 use nom::{digit};
 
 // Decoding parser combinators
-
 named!(numeric_string<&str>,
-       map_res!(digit, std::str::from_utf8)
+    map_res!(digit, std::str::from_utf8)
 );
 
 named!(number<u32>,
-       map_res!(numeric_string, std::str::FromStr::from_str)
+    map_res!(numeric_string, std::str::FromStr::from_str)
 );
 
 named!(one_char<&str>, map_res!(take!(1), std::str::from_utf8));
 
 named!(chunk<(u32, &str)>,
-       tuple!(number, one_char)
+    tuple!(number, one_char)
 );
 
 named!(either_chunk<(u32, &str)>,
-       alt!(chunk | tuple!(value!(1), one_char))
+    alt!(chunk | tuple!(value!(1), one_char))
 );
 
 named!(chunks<Vec<(u32, &str)>>,
-       many1!(either_chunk)
+    many1!(either_chunk)
 );
-
-// ---------------------------->
 
 pub fn decode(s: &str) -> String {
     if s == "" {
@@ -40,6 +37,8 @@ pub fn decode(s: &str) -> String {
 
     parsed_chunks.iter().fold(String::new(), f)
 }
+
+// ---------------------------->
 
 pub fn encode(s: &str) -> String {
     let mut chars = s.chars();
